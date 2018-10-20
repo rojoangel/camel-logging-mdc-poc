@@ -9,7 +9,6 @@ import org.apache.camel.test.spring.CamelSpringRunner;
 import org.apache.camel.test.spring.CamelTestContextBootstrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.MDC;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.BootstrapWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,17 +35,30 @@ public class RoutestTest {
   private MockEndpoint mockEndOfSplitEndpoint;
 
   @Test
-  public void testRoutes() throws Exception {
+  public void endOfInRouteShouldReceiveAnEnrichedMessage() throws Exception {
     mockEndOfInRouteEndpoint.expectedMessageCount(1);
-    mockEndOfInWiretapRouteEndpoint.expectedMessageCount(1);
-    mockEndOfOutRouteEndpoint.expectedMessageCount(1);
-    mockEndOfSplitEndpoint.expectedMessageCount(2);
-
     inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
-
     mockEndOfInRouteEndpoint.assertIsSatisfied();
+  }
+
+  @Test
+  public void endOfWiretapRouteShouldReceiveAnEnrichedMessage() throws Exception {
+    mockEndOfInWiretapRouteEndpoint.expectedMessageCount(1);
+    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
     mockEndOfInWiretapRouteEndpoint.assertIsSatisfied();
+  }
+
+  @Test
+  public void endOfOutRouteShouldReceiveAnEnrichedMessage() throws Exception {
+    mockEndOfOutRouteEndpoint.expectedMessageCount(1);
+    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
     mockEndOfOutRouteEndpoint.assertIsSatisfied();
+  }
+
+  @Test
+  public void endOfSplitRouteShouldReceiveEnrichedMessages() throws Exception {
+    mockEndOfSplitEndpoint.expectedMessageCount(2);
+    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
     mockEndOfSplitEndpoint.assertIsSatisfied();
   }
 }
