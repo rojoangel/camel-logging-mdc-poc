@@ -8,11 +8,14 @@
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
   <bean id="mdcLogger" class="poc.mdc.MDCLogger"/>
-  
+  <bean id="mdcEnricher" class="poc.mdc.MDCEnricher"/>
+
   <camelContext xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 
     <route id="in-route">
       <from uri="direct:in-route"/>
+      <bean ref="mdcLogger" method="log"/>
+      <bean ref="mdcEnricher" method="enrich"/>
       <bean ref="mdcLogger" method="log"/>
       <wireTap uri="direct:in-wiretap"/>
       <to uri="direct:out-route"/>
