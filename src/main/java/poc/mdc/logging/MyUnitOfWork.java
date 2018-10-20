@@ -40,28 +40,12 @@ public class MyUnitOfWork extends MDCUnitOfWork implements UnitOfWork {
   }
 
   @Override
-  public void stop() throws Exception {
-    super.stop();
-    // and remove when stopping
-    clear();
-  }
-
-  @Override
   public AsyncCallback beforeProcess(Processor processor, Exchange exchange,
       AsyncCallback callback) {
     return new MyMDCCallback(callback);
   }
 
   @Override
-  public void afterProcess(Processor processor, Exchange exchange, AsyncCallback callback, boolean doneSync) {
-    if (!doneSync) {
-      // must clear MDC on current thread as the exchange is being processed asynchronously
-      // by another thread
-      clear();
-    }
-    super.afterProcess(processor, exchange, callback, doneSync);
-  }
-
   public void clear() {
     if ("true".equals(System.getenv("CLEAR_MDC"))) {
       if (this.originaEnrichMe != null) {
