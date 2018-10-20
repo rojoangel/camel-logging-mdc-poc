@@ -16,7 +16,11 @@ To build this project use
 
 To run this project with Maven use
 
-    mvn test
+    # to see the tests passing
+    export CLEAR_MDC=true;mvn test
+    
+    # to see the tests failing
+    export CLEAR_MDC=false;mvn test
 
 For more help see the Apache Camel documentation
 

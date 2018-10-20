@@ -63,10 +63,12 @@ public class MyUnitOfWork extends MDCUnitOfWork implements UnitOfWork {
   }
 
   public void clear() {
-    if (this.originaEnrichMe != null) {
-      MDC.put(MDC_ENRICHME_ID, originaEnrichMe);
-    } else {
-      MDC.remove(MDC_ENRICHME_ID);
+    if ("true".equals(System.getenv("CLEAR_MDC"))) {
+      if (this.originaEnrichMe != null) {
+        MDC.put(MDC_ENRICHME_ID, originaEnrichMe);
+      } else {
+        MDC.remove(MDC_ENRICHME_ID);
+      }
     }
     super.clear();
   }
