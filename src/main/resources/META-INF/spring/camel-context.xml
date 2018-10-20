@@ -19,6 +19,7 @@
     <route id="in-route">
       <from uri="direct:in-route"/>
       <!-- bean ref="mdcLogger" method="log"/ -->
+      <bean ref="mdcTester" method="interruptWhenMDCEnriched"/>
       <bean ref="mdcEnricher" method="enrich"/>
       <setHeader headerName="enrich.me">
         <constant>Enriched</constant>

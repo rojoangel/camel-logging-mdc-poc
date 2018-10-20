@@ -9,4 +9,10 @@ public class MDCTester {
       throw new Exception("MDC not enriched");
     }
   }
+
+  public void interruptWhenMDCEnriched() throws Exception {
+    if (MDC.get("enrich.me") != null) {
+      throw new Exception("MDC already enriched");
+    }
+  }
 }
