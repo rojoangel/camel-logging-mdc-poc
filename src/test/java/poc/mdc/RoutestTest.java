@@ -1,5 +1,6 @@
 package poc.mdc;
 
+import java.util.Arrays;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.FluentProducerTemplate;
 import org.apache.camel.Produce;
@@ -31,16 +32,21 @@ public class RoutestTest {
   @EndpointInject(uri = "mock:end-of-out-route")
   private MockEndpoint mockEndOfOutRouteEndpoint;
 
+  @EndpointInject(uri = "mock:end-of-split")
+  private MockEndpoint mockEndOfSplitEndpoint;
+
   @Test
   public void testRoutes() throws Exception {
     mockEndOfInRouteEndpoint.expectedMessageCount(1);
     mockEndOfInWiretapRouteEndpoint.expectedMessageCount(1);
     mockEndOfOutRouteEndpoint.expectedMessageCount(1);
+    mockEndOfSplitEndpoint.expectedMessageCount(2);
 
-    inRouteProducer.send();
+    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
 
     mockEndOfInRouteEndpoint.assertIsSatisfied();
     mockEndOfInWiretapRouteEndpoint.assertIsSatisfied();
     mockEndOfOutRouteEndpoint.assertIsSatisfied();
+    mockEndOfSplitEndpoint.assertIsSatisfied();
   }
 }

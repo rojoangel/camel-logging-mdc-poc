@@ -19,6 +19,11 @@
       <bean ref="mdcLogger" method="log"/>
       <wireTap uri="direct:in-wiretap"/>
       <to uri="direct:out-route"/>
+      <split parallelProcessing="true">
+        <simple>${body}</simple>
+        <bean ref="mdcLogger" method="log"/>
+        <to uri="mock:end-of-split"/>
+      </split>
       <to uri="mock:end-of-in-route"/>
     </route>
 
