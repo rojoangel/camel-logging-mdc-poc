@@ -20,6 +20,9 @@
       <from uri="direct:in-route"/>
       <!-- bean ref="mdcLogger" method="log"/ -->
       <bean ref="mdcEnricher" method="enrich"/>
+      <setHeader headerName="enrich.me">
+        <constant>Enriched</constant>
+      </setHeader>
       <!-- bean ref="mdcLogger" method="log"/ -->
       <wireTap uri="direct:in-wiretap"/>
       <to uri="direct:out-route"/>
