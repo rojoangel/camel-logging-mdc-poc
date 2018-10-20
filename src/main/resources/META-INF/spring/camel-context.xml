@@ -7,6 +7,9 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
+  <!-- custom MDC logging that adds enrich.me to the context -->
+  <bean id="unitOfWorkFactory" class="poc.mdc.logging.MyUnitOfWorkFactory" />
+
   <bean id="mdcLogger" class="poc.mdc.MDCLogger"/>
   <bean id="mdcEnricher" class="poc.mdc.MDCEnricher"/>
   <bean id="mdcTester" class="poc.mdc.MDCTester"/>
