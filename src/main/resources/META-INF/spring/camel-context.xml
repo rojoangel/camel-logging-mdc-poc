@@ -9,6 +9,7 @@
 
   <bean id="mdcLogger" class="poc.mdc.MDCLogger"/>
   <bean id="mdcEnricher" class="poc.mdc.MDCEnricher"/>
+  <bean id="mdcTester" class="poc.mdc.MDCTester"/>
 
   <camelContext xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 
@@ -22,20 +23,24 @@
       <split parallelProcessing="true">
         <simple>${body}</simple>
         <bean ref="mdcLogger" method="log"/>
+        <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
         <to uri="mock:end-of-split"/>
       </split>
+      <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
       <to uri="mock:end-of-in-route"/>
     </route>
 
     <route id="in-wiretap">
       <from uri="direct:in-wiretap"/>
       <bean ref="mdcLogger" method="log"/>
+      <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
       <to uri="mock:end-of-in-wiretap-route"/>
     </route>
 
     <route id="out-route">
       <from uri="direct:out-route"/>
       <bean ref="mdcLogger" method="log"/>
+      <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
       <to uri="mock:end-of-out-route"/>
     </route>
 
