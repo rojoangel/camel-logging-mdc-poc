@@ -19,15 +19,22 @@ import org.springframework.test.context.ContextConfiguration;
 public class RoutestTest {
 
   @Produce(uri = "direct:in-route")
-  private FluentProducerTemplate inProducer;
+  private FluentProducerTemplate inRouteProducer;
 
-  @EndpointInject(uri = "mock:end-of-route")
-  private MockEndpoint mockEndOfRouteEndpoint;
+  @EndpointInject(uri = "mock:end-of-in-route")
+  private MockEndpoint mockEndOfInRouteEndpoint;
+
+  @EndpointInject(uri = "mock:end-of-in-wiretap-route")
+  private MockEndpoint mockEndOfInWiretapRouteEndpoint;
 
   @Test
-  public void nonParallelTest() throws Exception {
-    mockEndOfRouteEndpoint.expectedMessageCount(1);
-    inProducer.send();
-    mockEndOfRouteEndpoint.assertIsSatisfied();
+  public void testRoutes() throws Exception {
+    mockEndOfInRouteEndpoint.expectedMessageCount(1);
+    mockEndOfInWiretapRouteEndpoint.expectedMessageCount(1);
+
+    inRouteProducer.send();
+
+    mockEndOfInRouteEndpoint.assertIsSatisfied();
+    mockEndOfInWiretapRouteEndpoint.assertIsSatisfied();
   }
 }

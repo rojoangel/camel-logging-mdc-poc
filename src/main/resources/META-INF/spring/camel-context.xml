@@ -11,8 +11,15 @@
 
     <route id="in-route">
       <from uri="direct:in-route"/>
-      <log loggingLevel="WARN" message="Whatever"/>
-      <to uri="mock:end-of-route"/>
+      <log loggingLevel="WARN" message="in exchange"/>
+      <wireTap uri="direct:in-wiretap"/>
+      <to uri="mock:end-of-in-route"/>
+    </route>
+
+    <route id="in-wiretap">
+      <from uri="direct:in-wiretap"/>
+      <log loggingLevel="WARN" message="wiretapped exchange"/>
+      <to uri="mock:end-of-in-wiretap-route"/>
     </route>
   </camelContext>
 
