@@ -7,20 +7,30 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
+  <bean id="mdcLogger" class="poc.mdc.MDCLogger"/>
+  
   <camelContext xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
 
     <route id="in-route">
       <from uri="direct:in-route"/>
-      <log loggingLevel="WARN" message="in exchange"/>
+      <bean ref="mdcLogger" method="log"/>
       <wireTap uri="direct:in-wiretap"/>
+      <to uri="direct:out-route"/>
       <to uri="mock:end-of-in-route"/>
     </route>
 
     <route id="in-wiretap">
       <from uri="direct:in-wiretap"/>
-      <log loggingLevel="WARN" message="wiretapped exchange"/>
+      <bean ref="mdcLogger" method="log"/>
       <to uri="mock:end-of-in-wiretap-route"/>
     </route>
+
+    <route id="out-route">
+      <from uri="direct:out-route"/>
+      <bean ref="mdcLogger" method="log"/>
+      <to uri="mock:end-of-out-route"/>
+    </route>
+
   </camelContext>
 
 </beans>

@@ -8,6 +8,7 @@ import org.apache.camel.test.spring.CamelSpringRunner;
 import org.apache.camel.test.spring.CamelTestContextBootstrapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.MDC;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.BootstrapWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,14 +28,19 @@ public class RoutestTest {
   @EndpointInject(uri = "mock:end-of-in-wiretap-route")
   private MockEndpoint mockEndOfInWiretapRouteEndpoint;
 
+  @EndpointInject(uri = "mock:end-of-out-route")
+  private MockEndpoint mockEndOfOutRouteEndpoint;
+
   @Test
   public void testRoutes() throws Exception {
     mockEndOfInRouteEndpoint.expectedMessageCount(1);
     mockEndOfInWiretapRouteEndpoint.expectedMessageCount(1);
+    mockEndOfOutRouteEndpoint.expectedMessageCount(1);
 
     inRouteProducer.send();
 
     mockEndOfInRouteEndpoint.assertIsSatisfied();
     mockEndOfInWiretapRouteEndpoint.assertIsSatisfied();
+    mockEndOfOutRouteEndpoint.assertIsSatisfied();
   }
 }
