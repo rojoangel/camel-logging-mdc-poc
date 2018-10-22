@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 @RunWith(CamelSpringRunner.class)
 @BootstrapWith(CamelTestContextBootstrapper.class)
-// @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/camel-context.xml"})
 public class RoutestTest {
 
@@ -29,6 +28,12 @@ public class RoutestTest {
 
   @Produce(uri = "direct:in-route")
   private FluentProducerTemplate inRouteProducer;
+
+  @Produce(uri = "direct:in-filter")
+  private FluentProducerTemplate inFilterRouteProducer;
+
+  @EndpointInject(uri = "mock:end-of-in-filter-route")
+  private MockEndpoint mockEndOfInFilterRouteEndpoint;
 
   @EndpointInject(uri = "mock:end-of-in-route")
   private MockEndpoint mockEndOfInRouteEndpoint;
@@ -76,5 +81,12 @@ public class RoutestTest {
     mockEndOfSplitEndpoint.expectedMessageCount(2);
     inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
     mockEndOfSplitEndpoint.assertIsSatisfied();
+  }
+
+  @Test
+  public void endOfInFilterRouteShouldReceiveAnEnrichedMessage() throws Exception {
+    mockEndOfInFilterRouteEndpoint.expectedMessageCount(1);
+    inFilterRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
+    mockEndOfInFilterRouteEndpoint.assertIsSatisfied();
   }
 }
