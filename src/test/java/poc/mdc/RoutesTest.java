@@ -15,12 +15,14 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.BootstrapWith;
 import org.springframework.test.context.ContextConfiguration;
-import java.util.Arrays;
 
 @RunWith(CamelSpringRunner.class)
 @BootstrapWith(CamelTestContextBootstrapper.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/camel-context.xml"})
-public class RoutestTest {
+public class RoutesTest {
+
+  private static final String BODY = "{'id': 'id1', "
+      + "'subs': [{'name': 'msg1'}, {'name': 'msg2'}]}";
 
   @Rule
   public final EnvironmentVariables environmentVariables =
@@ -29,11 +31,8 @@ public class RoutestTest {
   @Produce(uri = "direct:in-route")
   private FluentProducerTemplate inRouteProducer;
 
-  @Produce(uri = "direct:in-filter")
-  private FluentProducerTemplate inFilterRouteProducer;
-
-  @EndpointInject(uri = "mock:end-of-in-filter-route")
-  private MockEndpoint mockEndOfInFilterRouteEndpoint;
+  @EndpointInject(uri = "mock:end-of-filter")
+  private MockEndpoint mockEndOfInFilterEndpoint;
 
   @EndpointInject(uri = "mock:end-of-in-route")
   private MockEndpoint mockEndOfInRouteEndpoint;
@@ -55,38 +54,39 @@ public class RoutestTest {
     MockEndpoint.resetMocks(camelContext);
   }
 
+
   @Test
   public void endOfInRouteShouldReceiveAnEnrichedMessage() throws Exception {
     mockEndOfInRouteEndpoint.expectedMessageCount(1);
-    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
+    inRouteProducer.withBody(BODY).send();
     mockEndOfInRouteEndpoint.assertIsSatisfied();
   }
 
   @Test
   public void endOfWiretapRouteShouldReceiveAnEnrichedMessage() throws Exception {
     mockEndOfInWiretapRouteEndpoint.expectedMessageCount(1);
-    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
+    inRouteProducer.withBody(BODY).send();
     mockEndOfInWiretapRouteEndpoint.assertIsSatisfied();
   }
 
   @Test
   public void endOfOutRouteShouldReceiveAnEnrichedMessage() throws Exception {
     mockEndOfOutRouteEndpoint.expectedMessageCount(1);
-    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
+    inRouteProducer.withBody(BODY).send();
     mockEndOfOutRouteEndpoint.assertIsSatisfied();
   }
 
   @Test
   public void endOfSplitRouteShouldReceiveEnrichedMessages() throws Exception {
     mockEndOfSplitEndpoint.expectedMessageCount(2);
-    inRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
+    inRouteProducer.withBody(BODY).send();
     mockEndOfSplitEndpoint.assertIsSatisfied();
   }
 
   @Test
   public void endOfInFilterRouteShouldReceiveAnEnrichedMessage() throws Exception {
-    mockEndOfInFilterRouteEndpoint.expectedMessageCount(1);
-    inFilterRouteProducer.withBody(Arrays.asList("msg1", "msg2")).send();
-    mockEndOfInFilterRouteEndpoint.assertIsSatisfied();
+    mockEndOfInFilterEndpoint.expectedMessageCount(1);
+    inRouteProducer.withBody(BODY).send();
+    mockEndOfInFilterEndpoint.assertIsSatisfied();
   }
 }
