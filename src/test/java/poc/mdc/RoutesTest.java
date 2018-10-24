@@ -19,7 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(CamelSpringRunner.class)
 @BootstrapWith(CamelTestContextBootstrapper.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/camel-context.xml"})
-public class RoutestTest {
+public class RoutesTest {
 
   private static final String BODY = "{'id': 'id1', "
       + "'subs': [{'name': 'msg1'}, {'name': 'msg2'}]}";
