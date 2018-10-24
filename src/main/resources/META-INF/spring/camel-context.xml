@@ -18,18 +18,19 @@
 
     <route id="in-route">
       <from uri="direct:in-route"/>
-      <!-- bean ref="mdcLogger" method="log"/ -->
+      <log message="${body}" />
       <bean ref="mdcTester" method="interruptWhenMDCEnriched"/>
-      <bean ref="mdcEnricher" method="enrich"/>
       <setHeader headerName="enrich.me">
         <constant>Enriched</constant>
       </setHeader>
-      <!-- bean ref="mdcLogger" method="log"/ -->
+      <bean ref="mdcEnricher" method="enrich"/>
+      <log message="${body}" />
       <wireTap uri="direct:in-wiretap"/>
       <to uri="direct:out-route"/>
       <split parallelProcessing="true">
         <simple>${body}</simple>
         <!-- bean ref="mdcLogger" method="log"/ -->
+        <log message="${body}" />
         <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
         <to uri="mock:end-of-split"/>
       </split>
@@ -39,14 +40,31 @@
 
     <route id="in-wiretap">
       <from uri="direct:in-wiretap"/>
-      <!-- bean ref="mdcLogger" method="log"/ -->
+      <log message="${body}" />
       <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
       <to uri="mock:end-of-in-wiretap-route"/>
+    </route>
+    
+    
+    <route id="in-filter">
+      <from uri="direct:in-filter" />
+      <log message="${body}" />
+        <setHeader headerName="enrich.me">
+          <constant>Enriched-in-filter</constant>
+        </setHeader>
+        <bean ref="mdcEnricher" method="enrich"/>
+      <filter>
+        <simple resultType="java.lang.Boolean">true</simple>
+        <log message="${body}" />
+      </filter>
+      <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
+      <log message="${body}" />
+      <to uri="mock:end-of-in-filter-route"/>
     </route>
 
     <route id="out-route">
       <from uri="direct:out-route"/>
-      <!-- bean ref="mdcLogger" method="log"/ -->
+      <log message="${body}" />
       <bean ref="mdcTester" method="interruptWhenMDCNotEnriched"/>
       <to uri="mock:end-of-out-route"/>
     </route>
